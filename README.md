@@ -1,37 +1,80 @@
-AI Chatbot 🤖
+🗨️ Streamlit Chat Assistant with LangGraph + LangChain
+A lightweight yet stateful chat assistant web app built with Streamlit on the front‑end and a compiled LangGraph + LangChain chatbot under the hood. It supports persistent conversation threads, checkpointing, and a clean chat UI for managing multiple sessions.
 
-Description
+🚀 Features
+Interactive Chat UI: Streamlit front‑end with real‑time streaming responses.
 
-An elegant, minimalist AI chatbot featuring a premium "Arctic Frost" interface. It uses LangGraph to manage conversation states, ensuring intelligent responses and persistent memory.
+Thread Management: Create, load, and persist multiple conversation threads with titles and IDs.
 
-Procedure
+Stateful Conversations: LangGraph checkpointing ensures continuity across sessions.
 
-Install: Run pip install streamlit langgraph langchain-openrouter python-dotenv.
+SQLite Persistence: Local database stores both thread metadata and conversation state.
 
-Key: Put your OpenRouter API key in a .env file.
+Seamless Integration: LangChain + OpenRouter model wrapper for flexible LLM backends.
 
-Run: Start the app with streamlit run app.py
+📂 Key Files
+main.py
 
-Tools & Skills Used
+Constructs the StateGraph, chatbot node(s), and integrates the ChatOpenRouter model.
 
-Core Technologies
+Implements checkpointing with SqliteSaver.
 
-Python: The primary programming language used for all logic and backend development.  
+Provides helper functions:
 
-LangGraph: Used for building the agentic state machine that manages conversation flows and memory.  
+get_all_thread_metadata() → fetch all saved thread titles + IDs.
 
-Streamlit: The framework used to build the interactive web interface.  
+save_thread_metadata(thread_id, title) → insert new thread records.
 
-OpenRouter API: Utilized to access and integrate large language models like baidu/cobuddy.  
+app.py
 
-Technical Skills
+Streamlit UI for chatting with the compiled chatbot.
 
-Stateful Orchestration: Designing a StateGraph to manage message history and node transitions.  
+Displays threads in the sidebar and streams assistant responses.
 
-Prompt Engineering: Crafting specialized system prompts to define the AI's behavior and personality.  
+Handles session state (message_history, current_thread, threads_id).
 
-Custom UI/UX Design: Injecting custom CSS into Streamlit to create a premium "Arctic Frost" theme with glassmorphism and frosted-glass effects.  
+🛠️ Tech Stack
+Frontend: Streamlit
 
-Backend Architecture: Developing a persistent memory system using InMemorySaver and thread_id to handle multi-turn interactions.  
+Backend / Orchestration: LangGraph, LangChain, ChatOpenRouter
 
+Database: SQLite (chatbot.db)
+
+Utilities: dotenv, uuid, Python typing (TypedDict, Annotated)
+
+Standard Libraries: os, sqlite3
+
+💾 Data & Persistence
+Thread Metadata: Stored in thread_metadata table (thread_id, title).
+
+Conversation State: Managed by LangGraph SqliteSaver scoped to each thread_id.
+
+Session State: Streamlit keeps track of active thread and message history.
+
+🔄 How It Works
+Chat Node: main.py defines chat_node → calls model.invoke(messages) → returns assistant messages.
+
+Graph Compilation: StateGraph compiled with SqliteSaver → exposed as chatbot.
+
+Streaming: app.py calls chatbot.stream → streams chunks to UI.
+
+Thread Lifecycle:
+
+New chat → save_thread_metadata() inserts record.
+
+Sidebar → load past threads via chatbot.get_state(config={thread_id}).
+
+📌 Getting Started
+
+# Clone the repo
+git clone https://github.com/sandip9664/AI_chatbot.git && cd AI_chatbot
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Set up environment variables
+echo "OPENROUTER_API_KEY=your_key_here" > .env
+
+# Run the app
+streamlit run app.py
 
